@@ -1,10 +1,10 @@
 "use client"
-import { Login } from './components/login'
+import { ToastExample } from '../components/todo'
 
 export default function Page() {
   return (
     <>
-      <Login />
+      <ToastExample />
     </>
   )
 }
