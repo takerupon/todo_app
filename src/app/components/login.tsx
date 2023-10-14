@@ -1,8 +1,16 @@
 "use client"
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-
-import { Flex, Heading, Input, Button } from '@chakra-ui/react'
+import { useEffect } from 'react';
+import {
+    Flex,
+    Heading,
+    Input,
+    Button,
+    Alert,
+    AlertIcon,
+    AlertTitle,
+    AlertDescription, } from '@chakra-ui/react'
 
 export const Login = () => {
     const [useremail, setUseremail] = useState('');
@@ -10,19 +18,36 @@ export const Login = () => {
     const [userinfo, setUserinfo] = useState(null);
     const Router = useRouter();
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    useEffect(() => {
+        getUserInfo();
+        }, []);
+
+    const getUserInfo = async () => {
+        const userInfo = await sessionStorage.getItem("userInfo");
+        if (userInfo) {
+            setUserinfo(JSON.parse(userInfo));
+        }
+    };
+
+    const handleSubmit = async (e:any) => {
         e.preventDefault();
-        const res = await fetch('/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ useremail, userpassword }),
-        });
-        const json = await res.json();
-        if (!res.ok) throw Error(json.message);
-        setUserinfo(json.userinfo);
-        Router.push('/todo');
+
+        if (useremail === "" || userpassword === "") {
+            alert("ユーザー名またはパスワードが入力されていません");
+            return;
+        }
+
+        const isAuthenticated = await userinfo.some(
+            (user:any) =>
+            user.useremail === useremail && user.userpassword === userpassword
+        );
+
+        if (isAuthenticated) {
+            alert("ログイン成功");
+            Router.push("/home");
+        } else {
+            alert("ユーザーネームとパスワードが一致しません");
+        }
     };
 
     return (
@@ -31,13 +56,11 @@ export const Login = () => {
             <Flex align={"center"} justify={"center"}>
                 <Heading mb={6}> Log In</Heading>
             </Flex>
-            <form onSubmit={handleSubmit}>
-                <Input placeholder="sample@sample.com" variant="filled" mb={3} type="email" onChange={(e) => setUseremail(e.target.value)} />
-                <Input placeholder="*********" variant="filled" mb={6} type="password" onChange={(e) => setUserpassword(e.target.value)} />
-                <Button mb={6} colorScheme="teal" type="submit">
+                <Input placeholder="sample@sample.com" variant="filled" mb={3} type="email" onChange={(e) => setUseremail}/>
+                <Input placeholder="*********" variant="filled" mb={6} type="password" onChange={(e) => setUserpassword}/>
+                <Button onClick={handleSubmit} mb={6} colorScheme="teal" type="submit">
                     Log In
                 </Button>
-            </form>
             <Button mb={6} colorScheme="teal" onClick={() => Router.push('/create_account')}>
                 Sign Up
             </Button>
