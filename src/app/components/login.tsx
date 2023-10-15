@@ -23,7 +23,7 @@ export const Login = () => {
         }, []);
 
     const getUserInfo = async () => {
-        const userInfo = await sessionStorage.getItem("userInfo");
+        const userInfo = await localStorage.getItem("userInfo");
         if (userInfo) {
             setUserinfo(JSON.parse(userInfo));
         }
