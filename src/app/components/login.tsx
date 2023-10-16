@@ -33,7 +33,7 @@ export const Login = () => {
         e.preventDefault();
 
         if (useremail === "" || userpassword === "") {
-            alert("ユーザー名またはパスワードが入力されていません");
+            alert("メールアドレスまたはパスワードが入力されていません");
             return;
         }
 
