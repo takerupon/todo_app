@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { useDisclosure } from '@chakra-ui/react'
 import {
     Flex,
     Heading,
@@ -30,6 +31,12 @@ export const Login = () => {
             setUserinfo(JSON.parse(userInfo));
         }
     };
+
+    const {
+        isOpen: isVisible,
+        onClose,
+        onOpen,
+    } = useDisclosure({ defaultIsOpen: false })
 
     const handleSubmit = async (e:any) => {
         e.preventDefault();

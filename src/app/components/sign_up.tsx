@@ -22,6 +22,7 @@ export const SignUp = () => {
     const [userpassword, setUserpassword] = useState<string>('');
     const [repassword, setRepassword] = useState<string>(''); // set initial value to empty string
     const [alertMessage, setAlertMessage] = useState<string>(''); // set initial value to empty string
+    const [successMessage, setSuccessMessage] = useState<string>(''); // set initial value to empty string
     const Router = useRouter();
 
     const userinfo = {
@@ -48,20 +49,27 @@ export const SignUp = () => {
             const olduserinfo = JSON.parse(localStorage.getItem("userinfo") || "[]");
             const newuserinfo = [...olduserinfo, { useremail, userpassword }];
             localStorage.setItem("userinfo", JSON.stringify(newuserinfo));
-            setAlertMessage("Account created");
+            setSuccessMessage("Account created successfully");
             onOpen();
             Router.push("/todo");
         }
     }
 
     return (
-        <Flex height={'100vh'} alignItems={'center'} justifyContent={'center'}>
+        <Flex height={'100vh'} alignItems={'center'} justifyContent={'center'} direction={"column"}>
             {alertMessage && isVisible && (
-                <Alert status="error">
+                <Alert status="error" mb={4} maxWidth={"500px"}>
                     <AlertIcon />
                     <AlertTitle mr={2}>Error!</AlertTitle>
                     <AlertDescription>{alertMessage}</AlertDescription>
-                    <CloseButton position="absolute" right="8px" top="8px" onClick={onclose}/>
+                    <CloseButton position="absolute" right="8px" top="8px" onClick={onClose}/>
+                </Alert>
+            )}
+            {successMessage && isVisible && (
+                <Alert status="success" mb={4} maxWidth={"500px"}>
+                    <AlertIcon />
+                    <AlertTitle mr={2}>Success!</AlertTitle>
+                    <AlertDescription>{successMessage}</AlertDescription>
                 </Alert>
             )}
             <Flex direction={'column'} background="gray.100" padding={12} rounded={6}>
