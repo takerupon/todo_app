@@ -46,7 +46,7 @@ export const Login = () => {
 
         if (isAuthenticated) {
             setAlertMessage('Login successful');
-            Router.push("/home");
+            Router.push("/todo");
         } else {
             setAlertMessage('Login failed');
         }
