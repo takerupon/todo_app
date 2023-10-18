@@ -13,9 +13,11 @@ import {
     AlertDescription, } from '@chakra-ui/react'
 
 export const Login = () => {
-    const [useremail, setUseremail] = useState('');
-    const [userpassword, setUserpassword] = useState('');
+    const [useremail, setUseremail] = useState<string>('');
+    const [userpassword, setUserpassword] = useState<string>('');
     const [userinfo, setUserinfo] = useState(null);
+    const [alertMessage, setAlertMessage] = useState<string>(''); // set initial value to empty string
+
     const Router = useRouter();
 
     useEffect(() => {
@@ -33,7 +35,7 @@ export const Login = () => {
         e.preventDefault();
 
         if (useremail === "" || userpassword === "") {
-            alert("メールアドレスまたはパスワードが入力されていません");
+            setAlertMessage('No email address or password entered');
             return;
         }
 
@@ -43,10 +45,10 @@ export const Login = () => {
         );
 
         if (isAuthenticated) {
-            alert("ログイン成功");
+            setAlertMessage('Login successful');
             Router.push("/home");
         } else {
-            alert("ユーザーネームとパスワードが一致しません");
+            setAlertMessage('Login failed');
         }
     };
 
