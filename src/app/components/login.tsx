@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { useDisclosure } from '@chakra-ui/react'
+import { CloseButton, useDisclosure } from '@chakra-ui/react'
 import {
     Flex,
     Heading,
@@ -12,12 +12,14 @@ import {
     AlertIcon,
     AlertTitle,
     AlertDescription, } from '@chakra-ui/react'
+import { on } from 'events';
 
 export const Login = () => {
     const [useremail, setUseremail] = useState<string>('');
     const [userpassword, setUserpassword] = useState<string>('');
     const [userinfo, setUserinfo] = useState(null);
     const [alertMessage, setAlertMessage] = useState<string>(''); // set initial value to empty string
+    const [successMessage, setSuccessMessage] = useState<string>(''); // set initial value to empty string
 
     const Router = useRouter();
 
@@ -43,6 +45,7 @@ export const Login = () => {
 
         if (useremail === "" || userpassword === "") {
             setAlertMessage('No email address or password entered');
+            onOpen();
             return;
         }
 
@@ -52,15 +55,32 @@ export const Login = () => {
         );
 
         if (isAuthenticated) {
-            setAlertMessage('Login successful');
+            setSuccessMessage('Login successful');
+            onOpen();
             Router.push("/todo");
         } else {
             setAlertMessage('Login failed');
+            onOpen();
         }
     };
 
     return (
-    <Flex height={'100vh'} alignItems={'center'} justifyContent={'center'}>
+    <Flex height={'100vh'} alignItems={'center'} justifyContent={'center'} direction={"column"}>
+        {alertMessage && isVisible && (
+            <Alert status="error" mb={4} maxWidth={"500px"}>
+                <AlertIcon />
+                <AlertTitle mr={2}>Error!</AlertTitle>
+                <AlertDescription>{alertMessage}</AlertDescription>
+                <CloseButton position="absolute" right="8px" top="8px" onClick={onClose} />
+            </Alert>
+        )}
+        {successMessage && isVisible && (
+            <Alert status="success">
+                <AlertIcon />
+                <AlertTitle mr={2}>Success!</AlertTitle>
+                <AlertDescription>{successMessage}</AlertDescription>
+            </Alert>
+        )}
         <Flex direction={'column'} background="gray.100" padding={12} rounded={6}>
             <Flex align={"center"} justify={"center"}>
                 <Heading mb={6}> Log In</Heading>
