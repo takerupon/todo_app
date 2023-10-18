@@ -1,6 +1,8 @@
 "use client"
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import { useDisclosure } from '@chakra-ui/react'
 
 import {
     Flex,
@@ -19,7 +21,8 @@ export const SignUp = () => {
     const [useremail, setUseremail] = useState<string>('');
     const [userpassword, setUserpassword] = useState<string>('');
     const [repassword, setRepassword] = useState<string>(''); // set initial value to empty string
-    const [errorMessage, setErrorMessage] = useState<string>(''); // set initial value to empty string
+    const [alertMessage, setAlertMessage] = useState<string>(''); // set initial value to empty string
+    const [successMessage, setSuccessMessage] = useState<string>(''); // set initial value to empty string
     const Router = useRouter();
 
     const userinfo = {
@@ -27,30 +30,46 @@ export const SignUp = () => {
         userpassword: userpassword,
     };
 
+    const {
+        isOpen: isVisible,
+        onClose,
+        onOpen,
+    } = useDisclosure({ defaultIsOpen: false })
+
     const handleSubmit = async (e:any) => {
         e.preventDefault();
 
         if (useremail === "" || userpassword === "") {
-            setErrorMessage('No email address or password entered');
+            setAlertMessage('No email address or password entered');
+            onOpen();
         } else if (userpassword !== repassword) {
-            setErrorMessage('Passwords do not match');
+            setAlertMessage('Passwords do not match');
+            onOpen();
         } else {
             const olduserinfo = JSON.parse(localStorage.getItem("userinfo") || "[]");
             const newuserinfo = [...olduserinfo, { useremail, userpassword }];
             localStorage.setItem("userinfo", JSON.stringify(newuserinfo));
-            alert("Account created");
+            setSuccessMessage("Account created successfully");
+            onOpen();
             Router.push("/todo");
         }
     }
 
     return (
-        <Flex height={'100vh'} alignItems={'center'} justifyContent={'center'}>
-            {errorMessage && (
-                <Alert status="error">
+        <Flex height={'100vh'} alignItems={'center'} justifyContent={'center'} direction={"column"}>
+            {alertMessage && isVisible && (
+                <Alert status="error" mb={4} maxWidth={"500px"}>
                     <AlertIcon />
                     <AlertTitle mr={2}>Error!</AlertTitle>
-                    <AlertDescription>{errorMessage}</AlertDescription>
-                    <CloseButton position="absolute" right="8px" top="8px" />
+                    <AlertDescription>{alertMessage}</AlertDescription>
+                    <CloseButton position="absolute" right="8px" top="8px" onClick={onClose}/>
+                </Alert>
+            )}
+            {successMessage && isVisible && (
+                <Alert status="success" mb={4} maxWidth={"500px"}>
+                    <AlertIcon />
+                    <AlertTitle mr={2}>Success!</AlertTitle>
+                    <AlertDescription>{successMessage}</AlertDescription>
                 </Alert>
             )}
             <Flex direction={'column'} background="gray.100" padding={12} rounded={6}>
