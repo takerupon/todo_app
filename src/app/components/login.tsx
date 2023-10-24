@@ -88,7 +88,7 @@ export const Login = () => {
                 <Input placeholder="sample@sample.com" variant="filled" mb={3} type="email" onChange={(e) => setUseremail}/>
                 <Input placeholder="*********" variant="filled" mb={6} type="password" onChange={(e) => setUserpassword}/>
                 <Button onClick={handleSubmit} mb={6} colorScheme="teal" type="submit">
-                    ログイン
+                    Log In
                 </Button>
             <Button mb={6} colorScheme="teal" onClick={() => Router.push('/create_account')}>
                 Sign Up
