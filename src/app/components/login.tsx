@@ -1,7 +1,6 @@
 "use client"
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
+import { useRouter } from 'next/navigation'; // 'next/navigation' ではなく 'next/router' です
 import { CloseButton, useDisclosure } from '@chakra-ui/react'
 import {
     Flex,
@@ -11,21 +10,26 @@ import {
     Alert,
     AlertIcon,
     AlertTitle,
-    AlertDescription, } from '@chakra-ui/react'
-import { on } from 'events';
+    AlertDescription,
+} from '@chakra-ui/react';
+
+type UserInfo = {
+    useremail: string;
+    userpassword: string;
+};
 
 export const Login = () => {
     const [useremail, setUseremail] = useState<string>('');
     const [userpassword, setUserpassword] = useState<string>('');
-    const [userinfo, setUserinfo] = useState(null);
-    const [alertMessage, setAlertMessage] = useState<string>(''); // set initial value to empty string
-    const [successMessage, setSuccessMessage] = useState<string>(''); // set initial value to empty string
+    const [userinfo, setUserinfo] = useState<UserInfo[] | null>(null);
+    const [alertMessage, setAlertMessage] = useState<string>('');
+    const [successMessage, setSuccessMessage] = useState<string>('');
 
     const Router = useRouter();
 
     useEffect(() => {
         getUserInfo();
-        }, []);
+    }, []);
 
     const getUserInfo = async () => {
         const userInfo = await localStorage.getItem("userInfo");
@@ -40,7 +44,7 @@ export const Login = () => {
         onOpen,
     } = useDisclosure({ defaultIsOpen: false })
 
-    const handleSubmit = async (e:any) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         if (useremail === "" || userpassword === "") {
@@ -49,10 +53,10 @@ export const Login = () => {
             return;
         }
 
-        const isAuthenticated = await userinfo.some(
-            (user:any) =>
-            user.useremail === useremail && user.userpassword === userpassword
-        );
+        const isAuthenticated = userinfo?.some(
+            (user: UserInfo) =>
+                user.useremail === useremail && user.userpassword === userpassword
+        ) || false;
 
         if (isAuthenticated) {
             setSuccessMessage('Login successful');
@@ -62,7 +66,7 @@ export const Login = () => {
             setAlertMessage('Login failed');
             onOpen();
         }
-    };
+    }
 
     return (
     <Flex height={'100vh'} alignItems={'center'} justifyContent={'center'} direction={"column"}>
